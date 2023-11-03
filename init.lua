@@ -40,6 +40,8 @@ P.S. You can delete this when you're done too. It's your config now :)
 -- Set <space> as the leader key
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are required (otherwise wrong leader will be used)
+--
+-- package.path = "~/.config/nvim/theme/?.lua;" .. package.path
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
@@ -73,6 +75,19 @@ require('lazy').setup({
 
   -- Detect tabstop and shiftwidth automatically
   'tpope/vim-sleuth',
+  -- Autopairs
+  {
+    "windwp/nvim-autopairs",
+    event = "InsertEnter",
+    -- config = function()
+      -- require("lvim.core.autopairs").setup()
+    -- end,
+    -- enabled = lvim.builtin.autopairs.active,
+    dependencies = { "nvim-treesitter/nvim-treesitter", "hrsh7th/nvim-cmp" },
+  },
+
+  -- Plugin for viewing all the URLs in a buffer.
+  { 'axieax/urlview.nvim', },
 
   -- NOTE: This is where your plugins related to LSP can be installed.
   --  The configuration is done below. Search for lspconfig to find it below.
@@ -92,7 +107,10 @@ require('lazy').setup({
       'folke/neodev.nvim',
     },
   },
-
+  {
+    "christoomey/vim-tmux-navigator",
+    lazy = false,
+  },
   {
     -- Autocompletion
     'hrsh7th/nvim-cmp',
@@ -109,6 +127,8 @@ require('lazy').setup({
     },
   },
 
+  -- Leap plugin.
+  { "ggandor/leap.nvim" },
   -- Useful plugin to show you pending keybinds.
   { 'folke/which-key.nvim', opts = {} },
   {
@@ -149,16 +169,23 @@ require('lazy').setup({
       end,
     },
   },
-
+  --{ 
+    --"catppuccin/nvim",
+    --name = "catppuccin",
+    --priority = 1000,
+  --},
+  --{--Theme inspired by Atom
+    --'navarasu/onedark.nvim',
+    --priority = 1000,
+    --config = function()
+      --vim.cmd.colorscheme 'onedark'
+    --end,
+  --},
   {
-    -- Theme inspired by Atom
-    'navarasu/onedark.nvim',
+    "folke/tokyonight.nvim",
+    lazy = false,
     priority = 1000,
-    config = function()
-      vim.cmd.colorscheme 'onedark'
-    end,
   },
-
   {
     -- Set lualine as statusline
     'nvim-lualine/lualine.nvim',
@@ -166,7 +193,8 @@ require('lazy').setup({
     opts = {
       options = {
         icons_enabled = false,
-        theme = 'onedark',
+        --theme = 'onedark',
+        theme = 'tokyonight',
         component_separators = '|',
         section_separators = '',
       },
@@ -230,6 +258,40 @@ require('lazy').setup({
   -- { import = 'custom.plugins' },
 }, {})
 
+-- Some required stuff
+require("urlview").setup({})
+require("nvim-autopairs").setup({})
+require("leap").add_default_mappings()
+
+-- setup theme
+require("tokyonight").setup({
+  style = "moon"
+})
+vim.cmd.colorscheme "tokyonight-moon"
+--require("onedark").setup({
+  --term_colors = false,
+  --transparent = true,
+--})
+--require("onedark").load()
+-- setup remapping
+require("mapping")
+
+-- require("onedark").setup({
+  -- style = "darker",
+  -- term_colors = true,
+  -- transparent = true,
+--})
+
+-- require("onedark").load()
+
+
+-- Keymaping/keybinds
+--
+-- Keybinds for UrlView Plugin
+vim.keymap.set('n', '\\u', '<Cmd>UrlView<CR>', { desc = 'View buffer URLs' })
+vim.keymap.set('n', '\\U', '<Cmd>UrlView packer<CR>', { desc = 'View Packer plugin URLs' })
+
+
 -- [[ Setting options ]]
 -- See `:help vim.o`
 -- NOTE: You can change these options as you wish!
@@ -239,6 +301,15 @@ vim.o.hlsearch = false
 
 -- Make line numbers default
 vim.wo.number = true
+
+-- Make relative number
+vim.wo.relativenumber = true
+
+-- Vertical split should be always to the right.
+vim.o.splitright = true
+
+-- Horizontal split should be always to the right.
+vim.o.splitbelow = true
 
 -- Enable mouse mode
 vim.o.mouse = 'a'
